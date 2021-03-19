@@ -21,13 +21,31 @@ var ready = (callback) => {
 ready(() => {  
   dummyDataLoad()
   getHeadlines()
-//create a div
-//add a pic
-//add the headline below
+  addImageToHeadlines()
+// make functions take arguments,
+// reorder to make it logical
 
 });
 
 const articles = []
+
+//get url into api request //get it into the loop for getting headlines
+
+function addImageToHeadlines() {
+  let cutUrl = "content.guardianapis.com/media/2021/mar/15/daily-telegraph-plans-link-journalists-pay-article-popularity"
+  let cleanedUrl = "http://news-summary-api.herokuapp.com/guardian?apiRequestUrl=http:" + cutUrl + "?show-fields=headline,thumbnail"
+
+  fetch(cleanedUrl)
+  .then(response => response.json())
+  .then.delay(5000).promise().then( body => {
+        console.log(body.response.content.fields.thumbnail)
+//     for(let i = 0; i < body.response.results.length; i++){
+//       if(body.response.results[i].type === "article") {
+//         let apiUrl = body.response.results[i].apiUrl
+        })
+}
+
+
 
 function getHeadlines() {
   let headlines = [];
