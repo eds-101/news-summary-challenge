@@ -1,9 +1,10 @@
+'use strict';
+
 class Story {
   constructor (title) {
-    this.title = title
+    this.webTitle = title
     this.apiUrl = ""
     this.cleanApiUrl = ""
-    this.webTitle = ""
     this.img = ""
     this.text = ""
   }

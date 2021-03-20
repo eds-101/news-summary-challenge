@@ -23,7 +23,7 @@ it('can store a story in an article grouping ', function() {
   var articles = new Articles
   var story = new Story("test story")
   articles.addArticle(story)
-  expect(articles.viewArticles()[0].title).toEqual('test story');
+  expect(articles.viewArticles()[0].webTitle).toEqual('test story');
 })
 
 console.log("Story tests")
@@ -34,6 +34,7 @@ it('can add further meta details', function() {
   var story = new Story("test story")
   story.apiUrl = apiUrl
   story.webUrl = webUrl
+  expect(story.webTitle).toEqual("test story");
   expect(story.apiUrl).toEqual("https://content.guardianapis.com/media/2021/mar/15/daily-telegraph-plans-link-journalists-pay-article-popularity");
   expect(story.webUrl).toEqual("https://www.theguardian.com/media/2021/mar/15/daily-telegraph-plans-link-journalists-pay-article-popularity");
 })
