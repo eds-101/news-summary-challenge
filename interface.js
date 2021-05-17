@@ -6,7 +6,6 @@ var ready = (callback) => {
 }
 
 ready(() => {  
-
   fetch("https://content.guardianapis.com/search?from-date=2021-03-23&to-date=2021-03-24&show-fields=headline%20thumbnail&q=uk&api-key=test")
   .then(response => response.json())
   .then( body => {
