@@ -6,7 +6,14 @@ var ready = (callback) => {
 }
 
 ready(() => {  
-  fetch("https://content.guardianapis.com/search?from-date=2021-03-23&to-date=2021-03-24&show-fields=headline%20thumbnail&q=uk&api-key=test")
+  let dateUpdate = document.getElementById('updated')
+  // get today and yesterday's date
+  let today = new Date()
+  let todayFormatted = today.toISOString().slice(0,10)
+  let yesterday = new Date( today.setDate(today.getDate()-5) ).toISOString().slice(0,10)
+  dateUpdate.innerHTML = todayFormatted
+
+  fetch(`https://content.guardianapis.com/search?from-date=${yesterday}&to-date=${todayFormatted}&show-fields=headline%20thumbnail&q=uk&api-key=test`)
   .then(response => response.json())
   .then( body => {
     let div = document.getElementById('headlines')
