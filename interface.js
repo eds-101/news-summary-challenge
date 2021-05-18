@@ -1,98 +1,94 @@
 'use strict';
 
-const dataset = [
-  { 
-    id: 0,
-    heading: "1st dummy heading",
-    img: "images/dummy.jpeg",
-},
-  { 
-    id: 1,
-    heading: "2nd dummy heading",
-    img: "images/dummy.jpeg",
-}
-]
-
 var ready = (callback) => {
   if (document.readyState != "loading") callback();
-  else document.addEventListener("DOMContentLoaded", callback);
+  else document.addEventListener("DOMContentLoaded", callback)
 }
 
 ready(() => {  
-  dummyDataLoad()
-  getHeadlines()
-  addImageToHeadlines()
-// make functions take arguments,
-// reorder to make it logical
+  fetch("https://content.guardianapis.com/search?from-date=2021-03-23&to-date=2021-03-24&show-fields=headline%20thumbnail&q=uk&api-key=test")
+  .then(response => response.json())
+  .then( body => {
+    let div = document.getElementById('headlines')
+
+    for(let i = 0; i < body.response.results.length; i++){
+      if(body.response.results[i].type === "article") {
+        const article = new Article(body.response.results[i])
+        div.appendChild(article.toNode())
+      }
+    }
+  })
 
 });
 
-const articles = []
-
-//get url into api request //get it into the loop for getting headlines
-
-function addImageToHeadlines() {
-  let cutUrl = "content.guardianapis.com/media/2021/mar/15/daily-telegraph-plans-link-journalists-pay-article-popularity"
-  let cleanedUrl = "http://news-summary-api.herokuapp.com/guardian?apiRequestUrl=http:" + cutUrl + "?show-fields=headline,thumbnail"
-
-  fetch(cleanedUrl)
-  .then(response => response.json())
-  .then.delay(5000).promise().then( body => {
-        console.log(body.response.content.fields.thumbnail)
-//     for(let i = 0; i < body.response.results.length; i++){
-//       if(body.response.results[i].type === "article") {
-//         let apiUrl = body.response.results[i].apiUrl
-        })
-}
-
-
-
-function getHeadlines() {
-  let headlines = [];
-  //get date i.e.new Date() and convert
-  fetch("http://news-summary-api.herokuapp.com/guardian?apiRequestUrl=http://content.guardianapis.com/search?q=article&query-fields=type&from-date=2021-03-19&use-date=newspaper-edition&q=news")
-  .then(response => response.json())
-  .then( body => {
-    for(let i = 0; i < body.response.results.length; i++){
-      if(body.response.results[i].type === "article") {
-        let apiUrl = body.response.results[i].apiUrl
-        let id = body.response.results[i].id
-        let webTitle = body.response.results[i].webTitle
-        let webUrl = body.response.results[i].webUrl
-        let entry = { apiUrl: apiUrl, id: id, webTitle: webTitle, webUrl: webUrl }
-        articles.push(entry)
-        // console.log(body.response.results[i])
-      }
-
-    }
-    
-    console.log(articles) 
-    // console.log(body.response.results) 
-  })
-}
-
-
-
-function dummyDataLoad() {
-  let parentdiv = document.createElement('div')
-  parentdiv.id='headlines'
-
-  for(let index = 0; index < dataset.length; index++) {
-    if(dataset[index].img) {
-      let div = document.createElement('div')
-      let h3 = document.createElement('h3')
-      let img = document.createElement('img')
-      img.src = dataset[index].img
-      h3.textContent = dataset[index].heading
-      div.appendChild(img)
-      div.appendChild(h3)
-      parentdiv.appendChild(div)
-    }
+class Article {
+  constructor(data) {
+    this.title = data.webTitle
+    this.url = data.webUrl
   }
 
-  document.body.appendChild(parentdiv)
-};
-//l8r
-//add hyperlinks
+  toNode() {
+    let node = document.createElement('div')
+    node.id = "articleSummary"
+    let title = document.createElement('h2')
+    title.innerText = this.title
+    node.appendChild(title)
 
-// load full title
+    this.fetchPictures(function(data){
+      let divImg = document.createElement('div')
+      divImg.id = "imgContainer"
+      let img = document.createElement('img')
+      img.src = data.response.content.fields.thumbnail
+      divImg.appendChild(img)
+      node.appendChild(divImg)
+    })
+
+    let link = document.createElement('a')
+    link.innerText = 'View original article'
+    link.setAttribute('href', this.url)
+    node.appendChild(link)
+    
+    this.fetchSummary(function(data){
+      let summaryDiv = document.createElement('div')
+      node.appendChild(summaryDiv)
+      
+      let text = document.createElement('p')
+      text.innerText = data.sentences.join(" ")
+      summaryDiv.appendChild(text)
+      text.style.display = "none"
+
+      const buttonToHide = document.createElement("button")
+      buttonToHide.innerText = "Show summary";
+      summaryDiv.appendChild(buttonToHide);
+
+      buttonToHide.addEventListener("click", (e) => {
+        //memoisation via arrow function
+        if(text.style.display === "block"){
+          buttonToHide.innerText = "Show summary"
+          text.style.display = "none"
+        }
+        else {
+          buttonToHide.innerText = "Hide summary"
+          text.style.display = "block"
+        }
+      })
+    })
+
+    return node
+  }
+
+ fetchSummary(callback) {
+   fetch(`http://news-summary-api.herokuapp.com/aylien?apiRequestUrl=https://api.aylien.com/api/v1/summarize?url=${this.url}`)
+   .then(response => {return response.json() })
+   .then(callback)
+  }
+
+ fetchPictures(callback){
+   const picUrl = this.url.replace('https://www.theguardian.com/','')
+   const url = `http://news-summary-api.herokuapp.com/guardian?apiRequestUrl=http://content.guardianapis.com/${picUrl}?show-fields=thumbnail`
+   fetch(url)
+   .then(response => { return response.json() })
+   .then(callback)
+ }
+
+}
