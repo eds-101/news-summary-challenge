@@ -2,7 +2,8 @@
 
 * Web App to display the latest UK Headlines, using Guardian API.
 
-![News Summary Gif](https://im3.ezgif.com/tmp/ezgif-3-23ef47b4700e.gif)
+<img src="/images/app_gif.gif" height="400px">
+<!-- ![Grappitude v2 Gif](https://github.com/eds-101/news-summary-challenge/blob/) -->
 
 # How to install and run the program from the terminal:
 ```sh
