@@ -1,16 +1,27 @@
-# News Summary challenge
+News Summary Challenge
+=================
 
-* Web App to display the latest UK Headlines, using Guardian API.
+A Single Page App (SPA) which uses The Guardian's API to display the latest UK Headlines. The purpose of this project was to learn about the modern SPA architecture and apply it without the use of a popular framework, such as React. The secondary purpose allowed us to experiment with using APIs.
+
+### Technologies used
+- Language: Javascript
+- APIs: The Guardian, Aylien for text summary
+- Testing APIs: Postman
 
 <img src="/images/app_gif.gif" height="400px">
-<!-- ![Grappitude v2 Gif](https://github.com/eds-101/news-summary-challenge/blob/) -->
+<!-- ![Video demo of the news app](https://github.com/eds-101/news-summary-challenge/blob/) -->
 
-# How to install and run the program from the terminal:
-```sh
-$ git clone git@github.com:eds-101/news-summary-challenge.git
-Use your terminal, navigate to root of this project root folder and run the following commands
-$ open index.html
+### Getting started
 ```
+git clone git@github.com:eds-101/news-summary-challenge.git
+```
+### Usage
+```
+cd news-summary-challenge
+open index.html
+```
+
+
 
 ## User Stories
 
